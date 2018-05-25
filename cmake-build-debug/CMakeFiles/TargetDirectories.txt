@@ -1,0 +1,3 @@
+/Users/xuetf/workspace/c-workspace/sift2/finalmatch/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/xuetf/workspace/c-workspace/sift2/finalmatch/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/xuetf/workspace/c-workspace/sift2/finalmatch/cmake-build-debug/CMakeFiles/finalmatch.dir
