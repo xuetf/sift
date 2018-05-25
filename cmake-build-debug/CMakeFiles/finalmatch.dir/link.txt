@@ -1,1 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/cc  -std=c99 -g -g -Wl,-search_paths_first -Wl,-headerpad_max_install_names  CMakeFiles/finalmatch.dir/cv.c.o CMakeFiles/finalmatch.dir/img.c.o CMakeFiles/finalmatch.dir/kdtree.c.o CMakeFiles/finalmatch.dir/main.c.o CMakeFiles/finalmatch.dir/minpq.c.o CMakeFiles/finalmatch.dir/sift.c.o  -o finalmatch -lm 
