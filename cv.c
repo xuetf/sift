@@ -243,8 +243,8 @@ void setSeqReaderPos(SeqReader* reader, int index, int is_relative)
 char* iMed3(char* a, char* b, char* c, CmpFunc cmp_func, void* aux)
 {
 	return cmp_func(a, b, aux) < 0 ?
-		(cmp_func(b, c, aux) < 0 ? b : cmp_func(a, c, aux) < 0 ? c : a)
-		: (cmp_func(b, c, aux) > 0 ? b : cmp_func(a, c, aux) < 0 ? a : c);
+		   (cmp_func(b, c, aux) < 0 ? b : cmp_func(a, c, aux) < 0 ? c : a)
+								   : (cmp_func(b, c, aux) > 0 ? b : cmp_func(a, c, aux) < 0 ? a : c);
 }
 int sliceLength(Slice slice, const Seq* seq)
 {
@@ -324,12 +324,12 @@ void iDestroyMemStorage(MemStorage* storage)
 void iGetColorModel(int nchannels, const char** colorModel, const char** channelSeq)
 {
 	static const char* tab[][2] =
-	{
-		{ "GRAY", "GRAY" },
-		{ "", "" },
-		{ "RGB", "BGR" },
-		{ "RGB", "BGRA" }
-	};
+			{
+					{ "GRAY", "GRAY" },
+					{ "", "" },
+					{ "RGB", "BGR" },
+					{ "RGB", "BGRA" }
+			};
 
 	nchannels--;
 	*colorModel = *channelSeq = "";
@@ -358,9 +358,9 @@ IplImage* initImageHeader(IplImage * image, Size size, int depth,int channels, i
 		return 0;
 
 	if ((depth != (int)IPL_DEPTH_1U && depth != (int)IPL_DEPTH_8U &&
-		depth != (int)IPL_DEPTH_8S && depth != (int)IPL_DEPTH_16U &&
-		depth != (int)IPL_DEPTH_16S && depth != (int)IPL_DEPTH_32S &&
-		depth != (int)IPL_DEPTH_32F && depth != (int)IPL_DEPTH_64F) ||
+		 depth != (int)IPL_DEPTH_8S && depth != (int)IPL_DEPTH_16U &&
+		 depth != (int)IPL_DEPTH_16S && depth != (int)IPL_DEPTH_32S &&
+		 depth != (int)IPL_DEPTH_32F && depth != (int)IPL_DEPTH_64F) ||
 		channels < 0)
 		return 0;
 
@@ -385,7 +385,7 @@ IplImage* initImageHeader(IplImage * image, Size size, int depth,int channels, i
 	image->depth = depth;
 	image->align = align;
 	image->widthStep = (((image->width * image->nChannels *
-		(image->depth & ~IPL_DEPTH_SIGN) + 7) / 8) + align - 1) & (~(align - 1));
+						  (image->depth & ~IPL_DEPTH_SIGN) + 7) / 8) + align - 1) & (~(align - 1));
 	image->origin = origin;
 	image->imageSize = image->widthStep * image->height;
 
@@ -399,7 +399,7 @@ IplImage *createImageHeader(Size size, int depth, int channels)
 	{
 		img = (IplImage *)ialloc(sizeof(*img));
 		initImageHeader(img, size, depth, channels, IPL_ORIGIN_TL,
-			CV_DEFAULT_IMAGE_ROW_ALIGN);
+						CV_DEFAULT_IMAGE_ROW_ALIGN);
 	}
 	else
 	{
@@ -408,9 +408,9 @@ IplImage *createImageHeader(Size size, int depth, int channels)
 		iGetColorModel(channels, &colorModel, &channelSeq);
 
 		img = IPL.createHeader(channels, 0, depth, (char*)colorModel, (char*)channelSeq,
-			IPL_DATA_ORDER_PIXEL, IPL_ORIGIN_TL,
-			CV_DEFAULT_IMAGE_ROW_ALIGN,
-			size.width, size.height, 0, 0, 0, 0);
+							   IPL_DATA_ORDER_PIXEL, IPL_ORIGIN_TL,
+							   CV_DEFAULT_IMAGE_ROW_ALIGN,
+							   size.width, size.height, 0, 0, 0, 0);
 	}
 
 	return img;
@@ -457,7 +457,7 @@ void createData(void* arr)
 		if (!IPL.allocateData)
 		{
 			img->imageData = img->imageDataOrigin =
-				(char*)ialloc((size_t)img->imageSize);
+					(char*)ialloc((size_t)img->imageSize);
 		}
 		else
 		{
@@ -490,7 +490,7 @@ void createData(void* arr)
 		if (CV_IS_MAT_CONT(mat->type))
 		{
 			total_size = (size_t)mat->dim[0].size*(mat->dim[0].step != 0 ?
-				(size_t)mat->dim[0].step : total_size);
+												   (size_t)mat->dim[0].step : total_size);
 		}
 		else
 		{
@@ -505,7 +505,7 @@ void createData(void* arr)
 		}
 
 		mat->refcount = (int*)ialloc(total_size +
-			sizeof(int) + CV_MALLOC_ALIGN);
+									 sizeof(int) + CV_MALLOC_ALIGN);
 		mat->data = (uchar*)lAlignPtr(mat->refcount + 1, CV_MALLOC_ALIGN);
 		*mat->refcount = 1;
 	}
@@ -539,7 +539,7 @@ void iFreeSeqBlock(Seq *seq, int in_front_of)
 
 			block->count = (int)(seq->block_max - seq->ptr);
 			seq->block_max = seq->ptr = block->prev->data +
-				block->prev->count * seq->elem_size;
+										block->prev->count * seq->elem_size;
 		}
 		else
 		{
@@ -695,7 +695,7 @@ void restoreMemStoragePos(MemStorage * storage, MemStoragePos * pos)
 	if (!storage || !pos)
 		return;
 	if (pos->free_space > storage->block_size)
-		return;	
+		return;
 
 	storage->top = pos->top;
 	storage->free_space = pos->free_space;
@@ -823,7 +823,7 @@ void iGrowSeq(Seq *seq, int in_front_of)
 			delta = MIN(delta, delta_elems) * elem_size;
 			seq->block_max += delta;
 			storage->free_space = lAlignLeft((int)(((char*)storage->top + storage->block_size) -
-				seq->block_max), CV_STRUCT_ALIGN);
+												   seq->block_max), CV_STRUCT_ALIGN);
 			return;
 		}
 		else
@@ -834,7 +834,7 @@ void iGrowSeq(Seq *seq, int in_front_of)
 			if (storage->free_space < delta)
 			{
 				int small_block_size = MAX(1, delta_elems / 3)*elem_size +
-					ICV_ALIGNED_SEQ_BLOCK_SIZE;
+									   ICV_ALIGNED_SEQ_BLOCK_SIZE;
 				/* try to allocate smaller part */
 				if (storage->free_space >= small_block_size + CV_STRUCT_ALIGN)
 				{
@@ -880,7 +880,7 @@ void iGrowSeq(Seq *seq, int in_front_of)
 		seq->ptr = block->data;
 		seq->block_max = block->data + block->count;
 		block->start_index = block == block->prev ? 0 :
-			block->prev->start_index + block->prev->count;
+							 block->prev->start_index + block->prev->count;
 	}
 	else
 	{
@@ -946,7 +946,7 @@ Mat* initMatHeader(Mat* arr, int rows, int cols, int type, void* data, int step)
 	}
 
 	arr->type = CV_MAT_MAGIC_VAL | type |
-		(arr->rows == 1 || arr->step == min_step ? CV_MAT_CONT_FLAG : 0);
+				(arr->rows == 1 || arr->step == min_step ? CV_MAT_CONT_FLAG : 0);
 
 	icheckHuge(arr);
 	return arr;
@@ -1029,7 +1029,7 @@ void seqSort(Seq* seq, CmpFunc cmp_func, void* aux)
 
 			if (n <= isort_thresh)
 			{
-			insert_sort:
+				insert_sort:
 				ptr = ptr2 = left;
 				CV_NEXT_SEQ_ELEM(elem_size, ptr);
 				CV_NEXT_SEQ_ELEM(elem_size, right);
@@ -1117,7 +1117,7 @@ void seqSort(Seq* seq, CmpFunc cmp_func, void* aux)
 						if (r == 0)
 						{
 							if (left1.ptr != left.ptr)
-								CV_SWAP_ELEMS(left1.ptr, left.ptr, elem_size);
+							CV_SWAP_ELEMS(left1.ptr, left.ptr, elem_size);
 							swap_cnt = 1;
 							CV_NEXT_SEQ_ELEM(elem_size, left1);
 						}
@@ -1129,7 +1129,7 @@ void seqSort(Seq* seq, CmpFunc cmp_func, void* aux)
 						if (r == 0)
 						{
 							if (right1.ptr != right.ptr)
-								CV_SWAP_ELEMS(right1.ptr, right.ptr, elem_size);
+							CV_SWAP_ELEMS(right1.ptr, right.ptr, elem_size);
 							swap_cnt = 1;
 							CV_PREV_SEQ_ELEM(elem_size, right1);
 						}
@@ -1142,7 +1142,7 @@ void seqSort(Seq* seq, CmpFunc cmp_func, void* aux)
 						if (r == 0)
 						{
 							if (left1.ptr != left.ptr)
-								CV_SWAP_ELEMS(left1.ptr, left.ptr, elem_size);
+							CV_SWAP_ELEMS(left1.ptr, left.ptr, elem_size);
 							swap_cnt = 1;
 							CV_NEXT_SEQ_ELEM(elem_size, left1);
 						}
@@ -1315,9 +1315,9 @@ IplImage *createImage(Size size, int depth, int channels)
 }
 void setZero(IplImage* src)
 {
-	uchar* srcData = (uchar*)src->imageData;//���ݵ���ʼ��ַ
+	uchar* srcData = (uchar*)src->imageData;////数据的起始地址
 
-	int width = src->widthStep;//ͼ����г��ȣ������ٸ��ֽ�
+	int width = src->widthStep;//图像的行长度，即多少个字节
 	int height = src->height;
 
 	for (int row = 0; row < height; row++)
@@ -1504,7 +1504,7 @@ IplImage* cloneImage(const IplImage* src)
 		if (src->roi)
 		{
 			dst->roi = iCreateROI(src->roi->coi, src->roi->xOffset,
-				src->roi->yOffset, src->roi->width, src->roi->height);
+								  src->roi->yOffset, src->roi->width, src->roi->height);
 		}
 
 		if (src->imageData)
@@ -1586,7 +1586,7 @@ Size isize(int width, int height)
 	return s;
 }
 
-//��������Ϊn��һά��˹�����
+//建立长度为n的一维高斯卷积核
 void CreatGauss(double sigma, double *cf, int n)
 {
 	double scale2X = -0.5 / (sigma*sigma);
@@ -1600,10 +1600,10 @@ void CreatGauss(double sigma, double *cf, int n)
 		{
 			cf[i] = t;
 			sum += cf[i];
-			
+
 		}
 	}
-	
+
 
 	sum = 1.0 / sum;
 	for (i = 0; i < n; i++)
@@ -1613,7 +1613,7 @@ void CreatGauss(double sigma, double *cf, int n)
 	}
 	printf("\n");
 }
-//�ø�˹�˲���ƽ��ԭͼ��  
+//用高斯滤波器平滑原图像
 void GaussianSmooth(const IplImage* src, IplImage* dst, double sigma)
 {
 	float* pGray = (float*)src->imageData;
@@ -1621,12 +1621,12 @@ void GaussianSmooth(const IplImage* src, IplImage* dst, double sigma)
 	Size sz=isize(src->width,src->height);
 	int  x, y, i;
 
-	double *pdKernel;			//һά��˹�˲���  
-	double *pdTemp;				//���ڱ���X�����˲��������
-	double dDotMul;				//��˹ϵ����ͼ�����ݵĵ��  
-	double dWeightSum = 0.0;	//�˲�ϵ���ܺ�  
-	int nWindowSize = iround(sigma * 4 * 2 + 1) | 1;//��˹�˲�������  
-	int nLen = nWindowSize / 2;						//���ڳ���  
+	double *pdKernel;			//一维高斯滤波器
+	double *pdTemp;				//用于保存X方向滤波后的数据
+	double dDotMul;				//高斯系数与图像数据的点乘
+	double dWeightSum = 0.0;	//滤波系数总和
+	int nWindowSize = iround(sigma * 4 * 2 + 1) | 1;//高斯滤波器长度
+	int nLen = nWindowSize / 2;						//窗口长度
 
 	if ((pdTemp = (double *)malloc(sz.width*sz.height*sizeof(double))) == NULL)
 	{
@@ -1636,20 +1636,20 @@ void GaussianSmooth(const IplImage* src, IplImage* dst, double sigma)
 	{
 		return;
 	}
-	
-	CreatGauss(sigma, pdKernel, nWindowSize);//����һά��˹����  
-	
-	for (i = 0; i < nWindowSize; ++i)//�����˹�˵ĺ�
+
+	CreatGauss(sigma, pdKernel, nWindowSize);//产生一维高斯数据
+
+	for (i = 0; i < nWindowSize; ++i)//计算高斯核的和
 		dWeightSum += pdKernel[i];
 
-	for (y = 0; y<sz.height; y++)//x�����˲�  
+	for (y = 0; y<sz.height; y++)//x方向滤波
 	{
 		for (x = 0; x<sz.width; x++)
 		{
 			dDotMul = 0;
 			for (i = (-nLen); i <= nLen; i++)
 			{
-				if ((i + x) >= 0 && (i + x)<sz.width)//�ж��Ƿ���ͼ���ڲ�  
+				if ((i + x) >= 0 && (i + x)<sz.width)//判断是否在图像内部
 				{
 					dDotMul += (double)(pGray[y*sz.width + (i + x)] * pdKernel[nLen + i]);
 				}
@@ -1658,7 +1658,7 @@ void GaussianSmooth(const IplImage* src, IplImage* dst, double sigma)
 		}
 	}
 
-	for (x = 0; x < sz.width; x++)//y�����˲� 
+	for (x = 0; x < sz.width; x++)//y方向滤波
 	{
 		for (y = 0; y < sz.height; y++)
 		{
