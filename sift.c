@@ -14,14 +14,14 @@ int _sift_features(IplImage* img, Feature** feat, int intvls, double sigma, doub
 	Seq* features;
 	int octvs, i, n;
 
-	init_img = create_init_img(img, img_dbl, sigma);
-	octvs = log(MIN(init_img->width, init_img->height)) / log(2) - 2;
+	init_img = create_init_img(img, img_dbl, sigma); // 原图扩大两倍并进行初始平滑
+	octvs = log(MIN(init_img->width, init_img->height)) / log(2) - 2; //计算有多少组
 
-	gauss_pyr = build_gauss_pyr(init_img, octvs, intvls, sigma);
-	dog_pyr = build_dog_pyr(gauss_pyr, octvs, intvls);
+	gauss_pyr = build_gauss_pyr(init_img, octvs, intvls, sigma);//建立高斯金字塔
+	dog_pyr = build_dog_pyr(gauss_pyr, octvs, intvls);//建立DOG金字塔
 
 	storage = createMemStorage(0);
-	features = scale_space_extrema(dog_pyr, octvs, intvls, contr_thr, curv_thr, storage);
+	features = scale_space_extrema(dog_pyr, octvs, intvls, contr_thr, curv_thr, storage);//检测极值点，特征点定位，特征方向赋值，特征点描述
 	calc_feature_scales(features, sigma, intvls);
 	if (img_dbl)
 		adjust_for_img_dbl(features);
@@ -65,8 +65,8 @@ static IplImage* create_init_img(IplImage* img, int img_dbl, double sigma)
 	IplImage* gray, *dbl;
 	double sig_diff;
 
-	gray = convert_to_gray32(img);
-	sig_diff = sqrt(sigma * sigma - SIFT_INIT_SIGMA * SIFT_INIT_SIGMA * 4);
+	gray = convert_to_gray32(img);//转成灰度图
+	sig_diff = sqrt(sigma * sigma - SIFT_INIT_SIGMA * SIFT_INIT_SIGMA * 4);//TODO
 	dbl = createImage(isize(img->width * 2, img->height * 2),IPL_DEPTH_32F, 1);
 	resizeImg(gray, dbl);
 
@@ -281,12 +281,12 @@ static Seq* scale_space_extrema(IplImage*** dog_pyr, int octvs, int intvls,
 					if (ABS(pixval32f(dog_pyr[o][i], r, c)) > prelim_contr_thr)
 						if (is_extremum(dog_pyr, o, i, r, c))
 						{
-							feat = interp_extremum(dog_pyr, o, i, r, c, intvls, contr_thr);
+							feat = interp_extremum(dog_pyr, o, i, r, c, intvls, contr_thr);//定位
 							if (feat)
 							{
 								ddata = feat_detection_data(feat);
 								if (!is_too_edge_like(dog_pyr[ddata->octv][ddata->intvl],
-									ddata->r, ddata->c, curv_thr))
+									ddata->r, ddata->c, curv_thr))//剔除边缘点
 								{
 									seqPush(features, feat);
 								}
